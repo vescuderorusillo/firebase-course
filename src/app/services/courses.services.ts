@@ -6,6 +6,9 @@ import { Course } from "../model/course";
 import { Lesson } from "../model/lesson";
 import { convertSnaps } from "./db-utils";
 
+import firebase from "firebase";
+import OrderByDirection = firebase.firestore.OrderByDirection;
+
 @Injectable({
     providedIn: "root"
 })
@@ -13,6 +16,20 @@ export class CoursesService {
     
     constructor(private db: AngularFirestore){
 
+    }
+
+    findLessons(courseId: string, sortOrder: OrderByDirection = 'asc', 
+                    pageNumber = 0, pageSize = 3) : Observable<Lesson[]> {
+        
+        return this.db.collection(`courses/${courseId}/lessons`, 
+            ref => ref.orderBy("seqNo", sortOrder)
+                .limit(pageSize)
+                .startAfter(pageNumber * pageSize)
+        )
+        .get()
+        .pipe(
+            map(results => convertSnaps<Lesson>(results))
+        );
     }
 
     findCourseByUrl(courseUrl: string) : Observable<Course | null> {
