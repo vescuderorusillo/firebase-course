@@ -5,13 +5,14 @@ import {finalize, tap} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 import {Lesson} from '../model/lesson';
 
-
 @Component({
   selector: 'course',
   templateUrl: './course.component.html',
   styleUrls: ['./course.component.css']
 })
 export class CourseComponent implements OnInit {
+
+  course: Course;
 
   loading = false;
 
@@ -22,7 +23,7 @@ export class CourseComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.course = this.route.snapshot.data["course"];
   }
 
 }
