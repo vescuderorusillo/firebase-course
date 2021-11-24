@@ -8,6 +8,7 @@ import {Router} from '@angular/router';
 import firebase from 'firebase/app';
 import Timestamp = firebase.firestore.Timestamp;
 import { CoursesService } from '../services/courses.services';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 @Component({
   selector: 'create-course',
@@ -17,6 +18,8 @@ import { CoursesService } from '../services/courses.services';
 export class CreateCourseComponent implements OnInit {
 
   courseId: string;
+
+  percentageChanges$ : Observable<number>;
 
   form = this.fb.group({
     description: ['', Validators.required],
@@ -31,7 +34,8 @@ export class CreateCourseComponent implements OnInit {
     private fb:FormBuilder,
     private courseService: CoursesService,
     private firestore: AngularFirestore,
-    private router: Router) {
+    private router: Router,
+    private storage: AngularFireStorage) {
 
   }
 
@@ -65,6 +69,22 @@ export class CreateCourseComponent implements OnInit {
         })
       )
       .subscribe();
+  }
+
+  uploadThumbnail(event) {
+    const file: File = event.target.files[0];
+
+    console.log(file.name);
+
+    const filePath = `courses/${this.courseId}/${file.name}`;
+
+    const task = this.storage.upload(filePath, file, {
+      cacheControl: "max-age=2592000,public"
+    });
+
+    this.percentageChanges$ = task.percentageChanges();
+
+    task.snapshotChanges().subscribe();
   }
 
 }
