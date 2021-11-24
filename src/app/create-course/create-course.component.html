@@ -14,7 +14,8 @@
 
       <span>Course thumbnail:</span>
 
-      <img class="course-thumbnail mat-elevation-z3">
+      <img class="course-thumbnail mat-elevation-z3"
+          [src]="iconUrl" *ngIf="iconUrl">
 
       <input type="file" (change)="uploadThumbnail($event)">
       <div class="upload-progress" *ngIf="(percentageChanges$ | async) as percentage">

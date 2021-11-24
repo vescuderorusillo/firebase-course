@@ -21,6 +21,8 @@ export class CreateCourseComponent implements OnInit {
 
   percentageChanges$ : Observable<number>;
 
+  iconUrl: string;
+
   form = this.fb.group({
     description: ['', Validators.required],
     category: ['BEGINNER', Validators.required],
@@ -84,7 +86,18 @@ export class CreateCourseComponent implements OnInit {
 
     this.percentageChanges$ = task.percentageChanges();
 
-    task.snapshotChanges().subscribe();
+    task.snapshotChanges()
+      .pipe(
+        last(),
+        concatMap(() => this.storage.ref(filePath).getDownloadURL()),
+        tap(url => this.iconUrl = url),
+        catchError(err => {
+          console.log(err);
+          alert("Could not create thumbnail url");
+          return throwError(err);
+        })
+      )
+      .subscribe();
   }
 
 }
