@@ -1,3 +1,4 @@
+import { db, auth } from "./init";
 import * as functions from "firebase-functions";
 
 const express = require('express');
@@ -16,6 +17,15 @@ createUserApp.post("/", async(req, res) =>{
         const email = req.body.email,
             password = req.body.password,
             admin = req.body.admin;
+
+        const user = await auth.createUser({
+            email,
+            password
+        });
+
+        auth.setCustomUserClaims(user.uid, {admin});
+
+        db.doc(`users/${user.uid}`).set({});
 
         res.status(200).json({message: "User created successfully."});
     }
