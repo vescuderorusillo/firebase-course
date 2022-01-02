@@ -6,7 +6,7 @@ export function getUserCredentialsMiddleware(req, res, next) {
 
     functions.logger.debug(`Attempting to extract user credentials from request.`);
 
-    const jwt = req.headers.Authorization;
+    const jwt = req.headers.authorization;
 
     if(jwt) {
         auth.verifyIdToken(jwt)

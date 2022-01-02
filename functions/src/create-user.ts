@@ -17,7 +17,7 @@ createUserApp.post("/", async(req, res) =>{
 
     try {
 
-        if( !(req["uid"] && req["admin"])) {
+        if(!(req["uid"] && req["admin"])) {
             const message = `Denied access to user creation service.`;
             functions.logger.debug(message);
             res.status(403).json({message});
